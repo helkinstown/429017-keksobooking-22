@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Olga Shapovalova](https://up.htmlacademy.ru/javascript/22/user/429017).
-* Наставник: `Неизвестно`.
+* Наставник: `Igor Shkapertin`.
 
 ---
 

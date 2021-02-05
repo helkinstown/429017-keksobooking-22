@@ -2,10 +2,10 @@
 
 let getRandomNumber = function (min, max) {
   if(min < 0 || max < 0) {
-    return 'Число не должно быть отрицательным!';
+    return -1;
   }
   if(min === max) {
-    return 'Числа для обозначения диапазона - одинаковые!';
+    return -2;
   }
   return Math.round(Math.random() * (max - min)) + min;
 }
@@ -16,7 +16,7 @@ getRandomNumber(0, 100);
 // Округлить до одного знака после запятой
 
 let getRandomFloat = function (min, max, decimal) {
-  return (Math.random() * (max - min) + min).toFixed(decimal);
+  return parseInt((Math.random() * (max - min) + min).toFixed(decimal));
 }
 
 getRandomFloat(0, 100, 1);

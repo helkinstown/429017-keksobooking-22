@@ -38,11 +38,17 @@ const PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
 ];
 
+const typeText = {
+  'palace': 'Дворец',
+  'flat': 'Квартира',
+  'house': 'Дом',
+  'bungalo': 'Бунгало',
+}
+
 let roomsForRent = [];
+let rentObject = {};
 
 for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
-
-  let rentObject = {};
 
   rentObject.author = {'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'} // нужна функция которая возвращает строку
 
@@ -68,4 +74,4 @@ for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
   roomsForRent.push(rentObject);
 }
 
-export default roomsForRent;
+export { typeText, rentObject, roomsForRent };

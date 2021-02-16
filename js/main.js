@@ -46,12 +46,9 @@ let getRandomElement = function(arr) {
   return arr[y];
 }
 
-let getRandomLength = function(arr){
-  let results = [];
+let getRandomLengthArray = function(arr){
   let lastIndex = Math.round(Math.random() * arr.length);
-  let arrSliced = arr.slice(0, lastIndex);
-  results.push(arrSliced);
-  return results;
+  return arr.slice(0, lastIndex);
 }
 
 let roomsForRent = [];
@@ -76,9 +73,9 @@ for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
     'guests': getRandomNumber(1, 3),
     'checkin': getRandomElement(TIME_CHECKIN),
     'checkout': getRandomElement(TIME_CHECKOUT),
-    'features': getRandomLength(FEATURES),
+    'features': getRandomLengthArray(FEATURES),
     'description': getRandomElement(DESCRIPTION),
-    'photos': getRandomLength(PHOTOS),
+    'photos': getRandomLengthArray(PHOTOS),
   }
 
   roomsForRent.push(rentObject);

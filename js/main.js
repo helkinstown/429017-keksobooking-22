@@ -1,3 +1,5 @@
+'use strict';
+
 const MAX_RENT_OBJECTS = 10;
 const HOUSE_TITLE = [
   'Большая уютная квартира',
@@ -31,17 +33,25 @@ const PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
 ];
 
-let getRandomFloat = function (min, max, decimal) {
-  return (Math.random() * (max - min) + min).toFixed(decimal); // не работает с parseInt и toNumber
+let getRandomFloat = function(min, max, decimal) {
+  return (Math.random() * (max - min) + min).toFixed(decimal);
 }
 
-let getRandomNumber = function (min, max) {
+let getRandomNumber = function(min, max) {
   return Math.round(Math.random() * (max - min)) + min;
 }
 
-function getRandomElement(arr) { // уточнить про пустой массив или new Array
+let getRandomElement = function(arr) {
   let y = Math.floor(Math.random() * arr.length);
   return arr[y];
+}
+
+let getRandomLength = function(arr){
+  let results = [];
+  let lastIndex = Math.round(Math.random() * arr.length);
+  let arrSliced = arr.slice(0, lastIndex);
+  results.push(arrSliced);
+  return results;
 }
 
 let roomsForRent = [];
@@ -52,9 +62,9 @@ for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
 
   rentObject.author = {'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'}
 
-  rentObject.location = { // должен стоять тут, или как по ТЗ третьим объектом?
-    'x': getRandomFloat(35.65000, 35.70000, 5), // разобраться почему не работает с parseInt
-    'y': getRandomFloat(139.70000, 139.80000, 5), //
+  rentObject.location = {
+    'x': getRandomFloat(35.65000, 35.70000, 5),
+    'y': getRandomFloat(139.70000, 139.80000, 5),
   }
 
   rentObject.offer = {
@@ -66,9 +76,9 @@ for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
     'guests': getRandomNumber(1, 3),
     'checkin': getRandomElement(TIME_CHECKIN),
     'checkout': getRandomElement(TIME_CHECKOUT),
-    'features': getRandomElement(FEATURES), // повторяются. нужна другая функция?
+    'features': getRandomLength(FEATURES),
     'description': getRandomElement(DESCRIPTION),
-    'photos': getRandomElement(PHOTOS),
+    'photos': getRandomLength(PHOTOS),
   }
 
   roomsForRent.push(rentObject);

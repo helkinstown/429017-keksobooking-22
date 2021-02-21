@@ -6,6 +6,7 @@ import {
 } from './utils.js';
 
 const MAX_RENT_OBJECTS = 10;
+
 const HOUSE_TITLE = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -42,7 +43,7 @@ const typeText = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
-  'bungalo': 'Бунгало',
+  'bungalow': 'Бунгало',
 }
 
 let roomsForRent = [];
@@ -50,7 +51,7 @@ let rentObject = {};
 
 for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
 
-  rentObject.author = {'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'} // нужна функция которая возвращает строку
+  rentObject.author = {'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'};
 
   rentObject.location = {
     'x': getRandomFloat(35.65000, 35.70000, 5),

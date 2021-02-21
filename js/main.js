@@ -1,2 +1,3 @@
 import './common/data.js';
-import './common/map.js';
+import './common/card.js';
+

@@ -1,9 +1,10 @@
 import { typeText, rentObject } from './data.js';
 
-// как добавить размеры фото? они же есть в стилях но не срабатывают
-// как скрыть элемент? как удалить див потомков. строка 24 и 25
-// правильно ли удаляются потомки перед отрисовкой? строка 27
-
+let removeAllChildren = function (container) {
+  while (container.firstChild) {
+    container.firstChild.remove();
+  }
+}
 
 let createCard = function() {
   let cardElement = document.querySelector('template').content.querySelector('.popup').cloneNode(true);
@@ -17,41 +18,32 @@ let createCard = function() {
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + rentObject.offer.checkin + ', ' + 'выезд после ' + rentObject.offer.checkout;
   cardElement.querySelector('.popup__description').textContent = rentObject.offer.description;
 
-  // массив с фичами
   let featuresContainer = cardElement.querySelector('.popup__features');
-  featuresContainer.textContent = rentObject.offer.features;
+  removeAllChildren(featuresContainer);
 
-  if(rentObject.offer.features.length === 0) {
-    //featuresContainer.parentElement.removeChild(featuresContainer);
-    featuresContainer.style.display = 'none';
-  } else {
-    while (featuresContainer.firstChild) {
-      featuresContainer.firstChild.remove();
+  if(rentObject.offer.features.length !== 0) {
+
+    for(let i = 0; i < rentObject.offer.features.length; i++) {
+      let featureItem = document.createElement('li');
+      featureItem.className = 'popup__feature popup__feature--' + rentObject.offer.features[i];
+      featuresContainer.appendChild(featureItem);
     }
   }
 
-  for(let i = 0; i < rentObject.offer.features.length; i++) {
-    let featureItem = document.createElement('li');
-    featureItem.className = 'popup__feature popup__feature--' + rentObject.offer.features[i];
-    featuresContainer.appendChild(featureItem);
-  }
+  let photoObj = cardElement.querySelector('.popup__photo');
+  let imgHeight = photoObj.height;
+  let imgWidth = photoObj.width;
 
-  // массив с фото
   let photosContainer = cardElement.querySelector('.popup__photos');
-  photosContainer.src = rentObject.offer.photos;
+  let photoData = rentObject.offer.photos;
+  removeAllChildren(photosContainer);
 
-  if(rentObject.offer.photos.length === 0) {
-    photosContainer.style.display = 'none';
-  } else {
-    while (photosContainer.firstChild) {
-      photosContainer.firstChild.remove();
-    }
-  }
-
-  for(let i = 0; i < rentObject.offer.photos.length; i++) {
+  for(let i = 0; i < photoData.length; i++) {
     let photoItem = document.createElement('img');
     photoItem.classList.add('popup__photo');
-    photoItem.src = rentObject.offer.photos[i];
+    photoItem.src = photoData[i];
+    photoItem.width = imgWidth;
+    photoItem.height = imgHeight;
     photosContainer.appendChild(photoItem);
   }
 

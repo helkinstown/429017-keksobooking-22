@@ -75,4 +75,4 @@ for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
   roomsForRent.push(rentObject);
 }
 
-export { typeText, rentObject, roomsForRent };
+export { typeText, roomsForRent, rentObject };

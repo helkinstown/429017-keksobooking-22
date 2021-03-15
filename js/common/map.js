@@ -1,30 +1,31 @@
-//import '../../leaflet/leaflet.js';
-//import '../../leaflet/leaflet.js.map';
-import { roomsForRent, rentObject } from './data.js';
+import { roomsForRent, rentObject, typeText } from './data.js';
+import { removeAllChildren } from './utils.js';
 
-let map = document.querySelector('.map');
-let adForm = document.querySelector('.ad-form');
-let fieldSet = document.querySelector('.ad-form__element');
+const coordinateOfTokio = '35.6804, 139.7690'; // координаты Токио
+const map = document.querySelector('.map');
+const adForm = document.querySelector('.ad-form');
+const fieldSet = document.querySelector('.ad-form__element');
+const inputAddress = document.querySelector('#address');
 
 map.classList.add('map--faded');
 adForm.classList.add('ad-form--disabled');
 fieldSet.classList.add('disabled');
+inputAddress.setAttribute('readonly', 'true');
 
+// Загрузка карты
 const mapCanvas = L.map('map-canvas')
 
   .on('load', () => {
-
-    //Переводим карту в активное состояние - это считается, что переводим средствами leaflet
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     fieldSet.classList.remove('disabled');
+    inputAddress.value = coordinateOfTokio;
   })
 
   .setView({
     lat: 35.6804,
     lng: 139.7690,
   }, 13);
-
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -33,11 +34,7 @@ L.tileLayer(
   },
 ).addTo(mapCanvas);
 
-let inputAddress = document.querySelector('#address');
-inputAddress.value = 'Координаты токио'; // как получить их из setView ??
-inputAddress.setAttribute('readonly', 'true'); // остается фокус
-
-// Отрисовываем пин
+// Отрисовка главного пина
 const mainPinIcon = L.icon({
   iconUrl: '../../img/main-pin.svg',
   iconSize: [52, 52],
@@ -56,43 +53,67 @@ const mainPinMarker = L.marker(
 );
 mainPinMarker.addTo(mapCanvas);
 
-
-// получаем координаты пина, который отображается в Поле Адрес
-
+// Получение координат главного пина после передвижения по карте, отображается в Поле Адрес
 mainPinMarker.on('moveend', (evt) => {
-
-  // главный пин есть всегда? до создания объявления?
   let coordinateOfMainPin = evt.target.getLatLng();
   let inputAddress = document.querySelector('#address');
-  inputAddress.value = `${coordinateOfMainPin.lat}` + ', ' + `${coordinateOfMainPin.lng}`;
+  inputAddress.value = `${coordinateOfMainPin.lat.toFixed(5)}` + ', ' + `${coordinateOfMainPin.lng.toFixed(5)}`;
 });
 
+// Отрисовка попапа
+const createCustomPopup = function() {
+  let cardElement = document.querySelector('#card').content.querySelector('.popup');
+  const popupElement =  cardElement.cloneNode(true)
 
-// Отрисовываем остальные пины - из объекта массива roomsForRent?
-// ТУТ НАСТУПИЛ СТУПОР: почему попапе отрисовывается не то, что в когда ниже, почему то приходит полная отрисовка
-// я сделала как в демонстрации, чтобы переделать, но теперь не понимаю почему неправильная отрисовка
+  cardElement.querySelector('.popup__avatar').src = rentObject.author.avatar;
+  cardElement.querySelector('.popup__title').textContent = rentObject.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = rentObject.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = rentObject.offer.price + ' ₽/ночь';
+  cardElement.querySelector('.popup__type').textContent = typeText[rentObject.offer.type];
+  cardElement.querySelector('.popup__text--capacity').textContent = rentObject.offer.rooms + ' комнаты' + ' для ' + rentObject.offer.guests + ' гостей';
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + rentObject.offer.checkin + ', ' + 'выезд после ' + rentObject.offer.checkout;
+  cardElement.querySelector('.popup__description').textContent = rentObject.offer.description;
 
-const points = [
-  {
-    title: rentObject.offer.title,
-    lat: rentObject.location.x,
-    lng: rentObject.location.y,
-  },
-];
+  let featuresContainer = cardElement.querySelector('.popup__features');
+  removeAllChildren(featuresContainer);
 
-// тут аргументом должен быть rentObject{} из roomsForRent[]?
-const createCustomPopup = function(point) { // функция отрисовки данных должна быть тут?
-  const balloonTemplate = document.querySelector('template').content.querySelector('.popup');
-  const popupElement = balloonTemplate.cloneNode(true);
+  if(rentObject.offer.features.length !== 0) {
 
-  popupElement.querySelector('.popup__title').textContent = point.title;
-  popupElement.querySelector('.popup__text--address').textContent = `Координаты: ${point.lat}, ${point.lng}`;
+    for(let i = 0; i < rentObject.offer.features.length; i++) {
+      let featureItem = document.createElement('li');
+      featureItem.className = 'popup__feature popup__feature--' + rentObject.offer.features[i];
+      featuresContainer.appendChild(featureItem);
+    }
+  }
 
+  let photoObj = cardElement.querySelector('.popup__photo');
+  let imgHeight = photoObj.height;
+  let imgWidth = photoObj.width;
+
+  let photosContainer = cardElement.querySelector('.popup__photos');
+  let photoData = rentObject.offer.photos;
+  removeAllChildren(photosContainer);
+
+  if(photoData.length !== 0) {
+
+    for(let i = 0; i < photoData.length; i++) {
+      let photoItem = document.createElement('img');
+      photoItem.classList.add('popup__photo');
+      photoItem.src = photoData[i];
+      photoItem.width = imgWidth;
+      photoItem.height = imgHeight;
+      photosContainer.appendChild(photoItem);
+    }
+  }
   return popupElement;
 };
 
-points.forEach((point) => {
-  const {lat, lng} = point;
+// Отрисовка остальных пинов, получение координат из массива объектов
+for(let i = 0; i < roomsForRent.length; i++) {
+  console.log(roomsForRent.length); // почему то отрисовывается всего один пин, хотя длина массива 10 ?
+
+  let lat = roomsForRent[i].location.x;
+  let lng = roomsForRent[i].location.y;
 
   const icon = L.icon({
     iconUrl: 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg',
@@ -107,15 +128,16 @@ points.forEach((point) => {
     },
     {
       icon,
+      draggable: false,
     },
   );
 
   marker
     .addTo(mapCanvas)
     .bindPopup(
-      createCustomPopup(point),
+      createCustomPopup(rentObject),
       {
         keepInView: true,
       },
     );
-});
+}

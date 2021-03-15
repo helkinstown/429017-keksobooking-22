@@ -16,4 +16,10 @@ const getRandomLengthArray = function(arr){
   return arr.slice(0, lastIndex);
 }
 
-export {getRandomFloat, getRandomElement, getRandomLengthArray, getRandomNumber}; // как лучше делать экспорт?
+const removeAllChildren = function (container) {
+  while (container.firstChild) {
+    container.firstChild.remove();
+  }
+}
+
+export { getRandomFloat, getRandomElement, getRandomLengthArray, getRandomNumber, removeAllChildren };

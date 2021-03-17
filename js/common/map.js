@@ -1,7 +1,13 @@
-import { roomsForRent, rentObject, typeText } from './data.js';
+import { roomsForRent, typeText } from './data.js';
 import { removeAllChildren } from './utils.js';
 
-const coordinateOfTokio = '35.6804, 139.7690'; // координаты Токио
+const MAIN_PIN_LAT = '35.6804';
+const MAIN_PIN_LNG = '139.7690';
+const MAIN_PIN_HEIGHT = 52;
+const MAIN_PIN_WIDTH = 52;
+const PIN_HEIGHT = 40;
+const PIN_WIDTH = 40;
+
 const map = document.querySelector('.map');
 const adForm = document.querySelector('.ad-form');
 const fieldSet = document.querySelector('.ad-form__element');
@@ -12,19 +18,17 @@ adForm.classList.add('ad-form--disabled');
 fieldSet.classList.add('disabled');
 inputAddress.setAttribute('readonly', 'true');
 
-// Загрузка карты
 const mapCanvas = L.map('map-canvas')
-
   .on('load', () => {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     fieldSet.classList.remove('disabled');
-    inputAddress.value = coordinateOfTokio;
+    inputAddress.value = MAIN_PIN_LAT + ', ' + MAIN_PIN_LNG;
   })
 
   .setView({
-    lat: 35.6804,
-    lng: 139.7690,
+    lat: MAIN_PIN_LAT,
+    lng: MAIN_PIN_LNG,
   }, 13);
 
 L.tileLayer(
@@ -34,17 +38,16 @@ L.tileLayer(
   },
 ).addTo(mapCanvas);
 
-// Отрисовка главного пина
 const mainPinIcon = L.icon({
   iconUrl: '../../img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
+  iconSize: [MAIN_PIN_HEIGHT, MAIN_PIN_WIDTH],
+  iconAnchor: [MAIN_PIN_HEIGHT / 2, MAIN_PIN_WIDTH],
 });
 
 const mainPinMarker = L.marker(
   {
-    lat: 35.6804,
-    lng: 139.7690,
+    lat: MAIN_PIN_LAT,
+    lng: MAIN_PIN_LNG,
   },
   {
     draggable: true,
@@ -53,28 +56,25 @@ const mainPinMarker = L.marker(
 );
 mainPinMarker.addTo(mapCanvas);
 
-// Получение координат главного пина после передвижения по карте, отображается в Поле Адрес
 mainPinMarker.on('moveend', (evt) => {
   let coordinateOfMainPin = evt.target.getLatLng();
-  let inputAddress = document.querySelector('#address');
   inputAddress.value = `${coordinateOfMainPin.lat.toFixed(5)}` + ', ' + `${coordinateOfMainPin.lng.toFixed(5)}`;
 });
 
-// Отрисовка попапа
-const createCustomPopup = function() {
+const createCustomPopup = function(rentObject) {
   let cardElement = document.querySelector('#card').content.querySelector('.popup');
-  const popupElement =  cardElement.cloneNode(true)
+  const popupElement = cardElement.cloneNode(true)
 
-  cardElement.querySelector('.popup__avatar').src = rentObject.author.avatar;
-  cardElement.querySelector('.popup__title').textContent = rentObject.offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = rentObject.offer.address;
-  cardElement.querySelector('.popup__text--price').textContent = rentObject.offer.price + ' ₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = typeText[rentObject.offer.type];
-  cardElement.querySelector('.popup__text--capacity').textContent = rentObject.offer.rooms + ' комнаты' + ' для ' + rentObject.offer.guests + ' гостей';
-  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + rentObject.offer.checkin + ', ' + 'выезд после ' + rentObject.offer.checkout;
-  cardElement.querySelector('.popup__description').textContent = rentObject.offer.description;
+  popupElement.querySelector('.popup__avatar').src = rentObject.author.avatar;
+  popupElement.querySelector('.popup__title').textContent = rentObject.offer.title;
+  popupElement.querySelector('.popup__text--address').textContent = rentObject.offer.address;
+  popupElement.querySelector('.popup__text--price').textContent = rentObject.offer.price + ' ₽/ночь';
+  popupElement.querySelector('.popup__type').textContent = typeText[rentObject.offer.type];
+  popupElement.querySelector('.popup__text--capacity').textContent = rentObject.offer.rooms + ' комнаты' + ' для ' + rentObject.offer.guests + ' гостей';
+  popupElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + rentObject.offer.checkin + ', ' + 'выезд после ' + rentObject.offer.checkout;
+  popupElement.querySelector('.popup__description').textContent = rentObject.offer.description;
 
-  let featuresContainer = cardElement.querySelector('.popup__features');
+  let featuresContainer = popupElement.querySelector('.popup__features');
   removeAllChildren(featuresContainer);
 
   if(rentObject.offer.features.length !== 0) {
@@ -86,11 +86,11 @@ const createCustomPopup = function() {
     }
   }
 
-  let photoObj = cardElement.querySelector('.popup__photo');
+  let photoObj = popupElement.querySelector('.popup__photo');
   let imgHeight = photoObj.height;
   let imgWidth = photoObj.width;
 
-  let photosContainer = cardElement.querySelector('.popup__photos');
+  let photosContainer = popupElement.querySelector('.popup__photos');
   let photoData = rentObject.offer.photos;
   removeAllChildren(photosContainer);
 
@@ -108,17 +108,15 @@ const createCustomPopup = function() {
   return popupElement;
 };
 
-// Отрисовка остальных пинов, получение координат из массива объектов
 for(let i = 0; i < roomsForRent.length; i++) {
-  console.log(roomsForRent.length); // почему то отрисовывается всего один пин, хотя длина массива 10 ?
 
   let lat = roomsForRent[i].location.x;
   let lng = roomsForRent[i].location.y;
 
   const icon = L.icon({
     iconUrl: 'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
+    iconSize: [PIN_HEIGHT, PIN_WIDTH],
+    iconAnchor: [PIN_HEIGHT / 2, PIN_WIDTH],
   });
 
   const marker = L.marker(
@@ -135,7 +133,7 @@ for(let i = 0; i < roomsForRent.length; i++) {
   marker
     .addTo(mapCanvas)
     .bindPopup(
-      createCustomPopup(rentObject),
+      createCustomPopup(roomsForRent[i]),
       {
         keepInView: true,
       },

@@ -17,7 +17,7 @@ const HOUSE_TITLE = [
   'Уютное бунгало далеко от моря',
   'Неуютное бунгало по колено в воде',
 ];
-const HOUSE_TYPE = ['palace', 'flat', 'house', 'bungalo'];
+const HOUSE_TYPE = ['palace', 'flat', 'house', 'bungalow'];
 const TIME_CHECKIN = ['12:00', '13:00', '14:00'];
 const TIME_CHECKOUT = ['12:00', '13:00', '14:00'];
 const FEATURES = [
@@ -50,6 +50,7 @@ let roomsForRent = [];
 let rentObject = {};
 
 for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
+  rentObject = {};
 
   rentObject.author = {'avatar': 'img/avatars/user0' + getRandomNumber(1, 8) + '.png'};
 
@@ -75,4 +76,4 @@ for (let i = 0; i < MAX_RENT_OBJECTS; i++) {
   roomsForRent.push(rentObject);
 }
 
-export { typeText, roomsForRent, rentObject };
+export { typeText, roomsForRent };

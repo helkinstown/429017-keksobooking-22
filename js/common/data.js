@@ -17,9 +17,10 @@ const HOUSE_TITLE = [
   'Уютное бунгало далеко от моря',
   'Неуютное бунгало по колено в воде',
 ];
-const HOUSE_TYPE = ['palace', 'flat', 'house', 'bungalo'];
+const HOUSE_TYPE = ['palace', 'flat', 'house', 'bungalow'];
 const TIME_CHECKIN = ['12:00', '13:00', '14:00'];
 const TIME_CHECKOUT = ['12:00', '13:00', '14:00'];
+
 const FEATURES = [
   'wifi',
   'dishwasher',

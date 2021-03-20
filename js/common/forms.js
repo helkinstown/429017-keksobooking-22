@@ -1,8 +1,9 @@
+let formTypeOfHome = document.querySelector('#type');
+let formPriceForNight = document.querySelector('#price');
+let formCheckIn = document.querySelector('#timein');
+let formCheckOut = document.querySelector('#timeout');
+
 let adFormEvent = function () {
-  let formTypeOfHome = document.getElementById('type');
-  let formPriceForNight = document.getElementById('price');
-  let formCheckIn = document.getElementById('timein');
-  let formCheckOut = document.getElementById('timeout');
 
   formTypeOfHome.addEventListener('change', function (evt) {
 
@@ -24,44 +25,21 @@ let adFormEvent = function () {
         formPriceForNight.placeholder = '10000';
         formPriceForNight.min = '10000';
         break;
-        // как тут правильно описать default?
     }
   });
 
   formPriceForNight.addEventListener('input', function(evt) {
     if(evt.target.value < 0) {
-      evt.target.value = ''; // правильно ли я выбрала тип события, поле числовое?
+      evt.target.value = '';
     }
   });
 
   formCheckIn.addEventListener('change', function (evt) {
-
-    switch(evt.target.value) {
-      case '12:00':
-        formCheckOut.value = '12:00';
-        break;
-      case '13:00':
-        formCheckOut.value = '13:00';
-        break;
-      case '14:00':
-        formCheckOut.value = '14:00';
-        break;
-    }
+    formCheckOut.value = evt.target.value;
   });
 
   formCheckOut.addEventListener('change', function (evt) {
-
-    switch(evt.target.value) {
-      case '12:00':
-        formCheckIn.value = '12:00';
-        break;
-      case '13:00':
-        formCheckIn.value = '13:00';
-        break;
-      case '14:00':
-        formCheckIn.value = '14:00';
-        break;
-    }
+    formCheckIn.value = evt.target.value;
   });
 }
 

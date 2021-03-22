@@ -1,19 +1,18 @@
-let formRoomNumber = document.querySelector('#room_number');
-let formCapacity = document.querySelector('#capacity');
-
 const MIN_NAME_LENGTH = 30;
 const MAX_NAME_LENGTH = 100;
 const MAX_PRICE = 1000000;
+
 const inputTitle = document.querySelector('#title');
 const inputPrice = document.querySelector('#price');
-const inputRoomNumber = document.querySelector('#room_number');
+let formRoomNumber = document.querySelector('#room_number');
+let formCapacity = document.querySelector('#capacity');
 
 inputTitle.addEventListener('invalid', () => {
 
   if (inputTitle.validity.tooShort) {
     inputTitle.setCustomValidity('Имя должно состоять минимум из 30-ти символов');
   } else if (inputTitle.validity.tooLong) {
-    inputTitle.setCustomValidity('Имя не должно превышать 100 символов'); // максимум задан в разметке, тут не надо обрабатывать?
+    inputTitle.setCustomValidity('Имя не должно превышать 100 символов'); //
   } else if (inputTitle.validity.valueMissing) {
     inputTitle.setCustomValidity('Обязательное поле');
   } else {
@@ -49,15 +48,28 @@ inputPrice.addEventListener('input', () => {
   inputPrice.reportValidity();
 });
 
-formRoomNumber.addEventListener('input', (evt) => {
+// Обработка формы Количество комнат
+let formCapacityOption = formCapacity.children;
 
-  if(evt.target.value === 1) {
-    formCapacity.value = '';
-    // показывать скрывать
+formRoomNumber.addEventListener('change', (evt) => {
+  formCapacity.value = evt.target.value;
+
+  for(let i = 0; i < formCapacityOption.length; i++) {
+    formCapacityOption[i].setAttribute('disabled', 'true');
+
+    if( evt.target.value === '1' ) {
+      formCapacityOption[2].disabled = false;
+    } else if( evt.target.value === '2' ) {
+      formCapacityOption[2].disabled = false;
+      formCapacityOption[1].disabled = false;
+    } else if( evt.target.value === '3' ) {
+      formCapacityOption[2].disabled = false;
+      formCapacityOption[1].disabled = false;
+      formCapacityOption[0].disabled = false;
+    } else {
+      formCapacityOption[3].disabled = false;
+      formCapacity.value = 'не для гостей'; // как тут правильнее сделать? почему не по порядку value?
+    }
   }
-
 });
 
-
-// если значение '' то подставляем плейсхолденр
-// если ввод, то старт от мин значения

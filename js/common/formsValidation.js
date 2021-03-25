@@ -4,8 +4,9 @@ const MAX_PRICE = 1000000;
 
 const inputTitle = document.querySelector('#title');
 const inputPrice = document.querySelector('#price');
-let formRoomNumber = document.querySelector('#room_number');
-let formCapacity = document.querySelector('#capacity');
+const formRoomNumber = document.querySelector('#room_number');
+const formCapacity = document.querySelector('#capacity');
+let formCapacityOption = formCapacity.children;
 
 inputTitle.addEventListener('invalid', () => {
 
@@ -48,28 +49,28 @@ inputPrice.addEventListener('input', () => {
   inputPrice.reportValidity();
 });
 
-// Обработка формы Количество комнат
-let formCapacityOption = formCapacity.children;
-
 formRoomNumber.addEventListener('change', (evt) => {
-  formCapacity.value = evt.target.value;
 
   for(let i = 0; i < formCapacityOption.length; i++) {
     formCapacityOption[i].setAttribute('disabled', 'true');
+  }
+  formCapacity.value = evt.target.value;
 
-    if( evt.target.value === '1' ) {
-      formCapacityOption[2].disabled = false;
-    } else if( evt.target.value === '2' ) {
-      formCapacityOption[2].disabled = false;
-      formCapacityOption[1].disabled = false;
-    } else if( evt.target.value === '3' ) {
-      formCapacityOption[2].disabled = false;
-      formCapacityOption[1].disabled = false;
-      formCapacityOption[0].disabled = false;
-    } else {
-      formCapacityOption[3].disabled = false;
-      formCapacity.value = 'не для гостей'; // как тут правильнее сделать? почему не по порядку value?
-    }
+  if( evt.target.value === '1' ) {
+    formCapacityOption[2].disabled = false;
+  }
+  if( evt.target.value === '2' ) {
+    formCapacityOption[2].disabled = false;
+    formCapacityOption[1].disabled = false;
+  }
+  if( evt.target.value === '3' ) {
+    formCapacityOption[2].disabled = false;
+    formCapacityOption[1].disabled = false;
+    formCapacityOption[0].disabled = false;
+  }
+  if (evt.target.value === '100') {
+    formCapacityOption[3].disabled = false;
+    formCapacityOption[3].value = '0';
+    formCapacity.value = '0';
   }
 });
-
